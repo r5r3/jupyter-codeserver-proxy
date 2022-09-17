@@ -99,6 +99,16 @@ def setup_codeserver():
         # '--extensions-dir=<path>',  # default: .local/share/code-server/extensions
         '--verbose',
     ]
+
+    # add or overwrite arguments from environment variable
+    if os.getenv("CODESERVER_ARGS") is not None:
+        additional_args = os.getenv("CODESERVER_ARGS").split()
+        # remove exisiting arguments
+        for arg in additional_args:
+            if arg.startswith('--'):
+                cmd = [x for x in cmd if not x.startswith(arg.split('=')[0])]
+        # add new arguments
+        cmd.extend(additional_args)
     logger.info('Code-Server command: ' + ' '.join(cmd))
 
     return {
